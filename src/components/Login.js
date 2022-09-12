@@ -41,9 +41,7 @@ export default function Login({ login }) {
                             />
                         </View>
                     </View>
-
                     <View style={styles.inputContainer}>
-
                         <TextInput
                             style={styles.input}
                             placeholderTextColor={'#91809c'}
@@ -60,7 +58,6 @@ export default function Login({ login }) {
                     <TouchableOpacity onPress={handleSubmit} style={styles.btnLogin}>
                         <Text style={styles.text}>Login</Text>
                     </TouchableOpacity>
-
                 </ImageBackground >
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

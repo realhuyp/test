@@ -15,21 +15,17 @@ const auth = createSlice({
         },
         logout(state, action) {
             state.token = null
-            localStorage.removeItem('Userdata')
+            
         }
 
     }
 });
-
-
-export const { loginSuccess, logout } = auth.actions;
 
 export const login = ({ email, password }) => async dispatch => {
     const res = await axios
         .post('https://codersx-swagger.glitch.me/api/auth/login', {
             email, password
         }).then(function (res) {
-            localStorage.setItem('Userdata', JSON.stringify(res.data))
             dispatch(loginSuccess(res.data))
             console.log(dispatch(loginSuccess(res.data)))
         }).catch(function (error) {
@@ -37,6 +33,10 @@ export const login = ({ email, password }) => async dispatch => {
         })
 
 }
+
+
+export const { loginSuccess, logout } = auth.actions;
+
 
 
 
