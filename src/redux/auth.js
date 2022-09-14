@@ -23,7 +23,7 @@ const auth = createSlice({
 
 export const login = ({ email, password }) => async dispatch => {
     const res = await axios
-        .post('https://codersx-swagger.glitch.me/api/auth/login', {
+        .post('https://reqres.in/api/login', {
             email, password
         }).then(function (res) {
             dispatch(loginSuccess(res.data))

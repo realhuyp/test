@@ -1,25 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard, Image, TouchableWithoutFeedback, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
-
+import { useForm, Controller } from "react-hook-form";
 import Icon from "react-native-vector-icons/Ionicons";
 const { width: WIDTH } = Dimensions.get('window')
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export default function Login({ login }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('')
-    
-    function handleSubmit(e) {
-        e.preventDefault()
-        
-        login({ email, password })
-    }
 
+    const schema = yup.object({
+        email: yup.string().email().required("It need to be an email (abc@email.com)"),
+        password: yup
+    .string()
+    .min(8, "Password need to be greater than 8 "),
+    })
+
+    const { control, handleSubmit, formState: { errors }, reset } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            email: '',
+            password: ''
+        }
+    });
+    const onSubmit = (data) => {
+        login(data)
+    }
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? "padding" : "height"}
             style={styles.keyboardContainer}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ImageBackground source={require('../img/ktm.jpg')}
+                <ImageBackground source={require('../img/bg.jpg')}
                     style={styles.ImageBackgroundContainer}>
                     <View style={styles.logoContainer}>
                         <Image source={require('../img/ktm3.png')}
@@ -27,35 +38,49 @@ export default function Login({ login }) {
                     </View>
 
                     <View style={styles.inputContainer}>
+
                         <View style={{ backgroundColor: '#00000' }}>
-                            <TextInput
-                                style={styles.input}
-                                placeholderTextColor={'#91809c'}
-                                underlineColorAndroid='trans'
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                placeholder={'Email'} />
-                            <Icon name={'ios-person-outline'} size={28}
-                                color={'#000000'}
-                                style={styles.inputIcon}
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        style={styles.input}
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                        value={value}
+                                    />
+                                )}
+                                name="email"
                             />
+                            {errors.email && <Text style={styles.inputErr}>{errors.email.message}</Text>}
+
                         </View>
                     </View>
                     <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholderTextColor={'#91809c'}
-                            underlineColorAndroid='trans'
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            placeholder={'Password'}
-                            secureTextEntry={true} />
-                        <Icon name={'ios-lock-open-outline'} size={28}
-                            color={'#000000'}
-                            style={styles.inputIcon}
+                        <Controller
+                            control={control}
+                            rules={{
+                                required: true,
+                                maxLength: 20
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={styles.input}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    secureTextEntry={true}
+                                />
+                            )}
+                            name="password"
                         />
+                        {errors.password && <Text style={styles.inputErr}>{errors.password.message}</Text>}
                     </View>
-                    <TouchableOpacity onPress={handleSubmit} style={styles.btnLogin}>
+                    <TouchableOpacity onPress={handleSubmit(onSubmit)} style={styles.btnLogin}>
                         <Text style={styles.text}>Login</Text>
                     </TouchableOpacity>
                 </ImageBackground >
@@ -93,10 +118,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffff',
         marginHorizontal: 25,
     },
-    inputIcon: {
-        position: 'absolute',
-        top: 9,
-        left: 37
+    inputErr: {
+        color: 'red',
+        fontSize: 17,
+        paddingLeft: 45,
+        marginHorizontal: 25,
+        width: WIDTH - 55,
+
     },
     btnEye: {
         position: 'absolute',

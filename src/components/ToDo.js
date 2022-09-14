@@ -23,14 +23,7 @@ const Todo = ({ todos_list, addTodo, deleteTodo, editTodo, navigation, setTodo, 
     }, [isFocus, isRefesh])
 
     const handleAddTodo = () => {
-        if (title.length == 0) {
-            setIsValid({ bool: true, boolSnack: true, message: "Please fill out title" })
-            return;
-        }
-        if (title.length < 3) {
-            setIsValid({ bool: true, boolSnack: true, message: "Title must be at least 6 characters" })
-            return;
-        }
+       
 
         addTodo({ title, description })
         setTitle('')
